@@ -15,22 +15,22 @@ useEffect(() => {
   window.localStorage.setItem('contacts', JSON.stringify(contacts))
 },[contacts])
 
+const updateContacts = ({ name, number }) => {
+  const contactExists = contacts.find(contact => {
+    return contact.name === name || contact.number === number;
+  });
 
-  const updateContacts = ({ name, number }) => {
-    const contactExists = contacts.find(contact => {
-      return contact.name === name || contact.number === number;
-    });
+  contactExists
+    ? Report.info(
+        
+        `Contact with name ${name} and number ${number} already exists`,
+        'Okay'
+      )
+    : setContacts(prevContacts => ([...prevContacts, {id: nanoid(), name, number}]))
+    
+    
+};
 
-    contactExists
-      ? Report.info(
-          '',
-          `Contact with name ${name} and number ${number} already exists`,
-          'Okay'
-        )
-      : setContacts(prevContacts => ([...prevContacts, {id: nanoid(), name, number}]))
-      
-      
-  };
 
   const filterContacts = e => {
     setFilter(e.target.value);
@@ -39,11 +39,15 @@ useEffect(() => {
   const deleteContacts = id => {
     setContacts(prevContacts => (prevContacts.filter(contact => contact.id !== id))
   )};
+
+ 
      
   const normalizedFilter = filter.toLowerCase();
   const filteredContacts = contacts.filter(contact =>
       contact.name.toLowerCase().includes(normalizedFilter)
     );
+
+   
   return (
       <>
         <Section title="Phonebook">
